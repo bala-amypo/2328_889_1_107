@@ -9,6 +9,6 @@ public class Evidence{
     private String DOCUMENT;
     private String TEXT;
     private String fileUrl;
-    private
+    private LocalDateTime uploadedAt;
 
 }
