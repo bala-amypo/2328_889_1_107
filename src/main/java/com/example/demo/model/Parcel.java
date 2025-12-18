@@ -1,6 +1,8 @@
 package com.example.demo.model;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Min;
 
 public class Parcel{
     @Id
@@ -9,6 +11,7 @@ public class Parcel{
     private String trackingNumber;
     private String senderName;
     private String receiverName;
-    private double weightKg;
+    @Min(1)
+    private Double weightKg;
     private LocalDate deliveredAt;
 }
