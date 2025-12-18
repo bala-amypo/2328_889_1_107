@@ -1,6 +1,6 @@
 package com.example.demo.model;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Column;
 public class User{
     @Id
     private Long id;

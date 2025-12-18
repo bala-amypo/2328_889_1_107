@@ -5,6 +5,9 @@ import jakarta.validation.constraints.*;
 public class ClaimRule{
     @Id
     private Long id;
-    private String ru
+    private String rulename;
+    private String conditionExpression;
+    private Double weight;
+    
 
 }

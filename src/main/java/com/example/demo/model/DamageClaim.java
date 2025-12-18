@@ -1,5 +1,6 @@
 package com.example.demo.model;
 import jakarta.persistence.Id;
+import java.time.*;
 public class damageClaim{
     @Id
     private Long id;
@@ -9,6 +10,6 @@ public class damageClaim{
     private String APPROVED;
     private String REJECTED;
     private Double score;
-    
+
 
 }
