@@ -13,6 +13,6 @@ public class Parcel{
     private String receiverName;
     @Min(1)
     private Double weightKg;
-    
-    private LocalDate deliveredAt;
+
+    private LocalDateTime deliveredAt;
 }
