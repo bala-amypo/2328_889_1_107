@@ -1,5 +1,7 @@
 package com.example.demo.repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-public interface ClaimRuleRepository extends JpaRepository<ClaimRule,Long>{
 
+import com.example.demo.model.ClaimRule;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ClaimRuleRepository extends JpaRepository<ClaimRule, Long> {
 }
