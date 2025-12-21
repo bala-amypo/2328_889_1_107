@@ -2,44 +2,28 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Parcel;
 import com.example.demo.service.ParcelService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/parcels")
+@RequestMapping("/parcels")
 public class ParcelController {
 
-    @Autowired
-    private ParcelService parcelService;
+    private final ParcelService parcelService;
+    public ParcelController(ParcelService parcelService) { this.parcelService = parcelService; }
 
     @PostMapping
-    public Parcel createParcel(@RequestBody Parcel parcel) {
-        return parcelService.createParcel(parcel);
-    }
-
-    @GetMapping
-    public List<Parcel> getAllParcels() {
-        return parcelService.getAllParcels();
-    }
+    public Parcel addParcel(@RequestBody Parcel parcel) { return parcelService.addParcel(parcel); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Parcel> getParcelById(@PathVariable Long id) {
-        return parcelService.getParcelById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+    public Parcel getParcel(@PathVariable Long id) { return parcelService.getParcel(id); }
 
-    @PutMapping("/{id}")
-    public Parcel updateParcel(@PathVariable Long id, @RequestBody Parcel parcel) {
-        return parcelService.updateParcel(id, parcel);
-    }
+    @GetMapping
+    public List<Parcel> getAllParcels() { return parcelService.getAllParcels(); }
+
+    @PutMapping
+    public Parcel updateParcel(@RequestBody Parcel parcel) { return parcelService.updateParcel(parcel); }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteParcel(@PathVariable Long id) {
-        parcelService.deleteParcel(id);
-        return ResponseEntity.noContent().build();
-    }
+    public void deleteParcel(@PathVariable Long id) { parcelService.deleteParcel(id); }
 }
