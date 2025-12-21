@@ -61,6 +61,14 @@
 	        <version>2.3.0</version>
 	    </dependency>
 
+	    <!-- Servlet API (for filters) -->
+	    <dependency>
+	        <groupId>jakarta.servlet</groupId>
+	        <artifactId>jakarta.servlet-api</artifactId>
+	        <version>6.0.0</version>
+	        <scope>provided</scope>
+	    </dependency>
+
 	    <!-- Testing -->
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
@@ -91,7 +99,6 @@
 						<artifactId>surefire-testng</artifactId>
 						<version>3.2.5</version>
 					</dependency>
-					
 				</dependencies>
 			</plugin>
 		</plugins>
