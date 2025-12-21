@@ -27,7 +27,7 @@ public class User {
         this.password = password;
         this.role = role;
     }
-
+A
     // Getters and setters used in tests
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
