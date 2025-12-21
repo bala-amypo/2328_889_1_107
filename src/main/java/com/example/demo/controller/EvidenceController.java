@@ -1,14 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.model.Evidence;
+import com.example.demo.service.EvidenceService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/evidence")
 public class EvidenceController {
 
-    @GetMapping("/evidence")
-    public ApiResponse getEvidence() {
-        return new ApiResponse("Evidence fetched successfully");
+    private final EvidenceService evidenceService;
+
+    public EvidenceController(EvidenceService evidenceService) {
+        this.evidenceService = evidenceService;
+    }
+
+    @PostMapping("/upload/{claimId}")
+    public Evidence uploadEvidence(@PathVariable Long claimId, @RequestBody Evidence evidence) {
+        return evidenceService.uploadEvidence(claimId, evidence);
+    }
+
+    @GetMapping("/claim/{claimId}")
+    public ResponseEntity<List<Evidence>> getEvidenceForClaim(@PathVariable Long claimId) {
+        return ResponseEntity.ok(evidenceService.getEvidenceForClaim(claimId));
     }
 }

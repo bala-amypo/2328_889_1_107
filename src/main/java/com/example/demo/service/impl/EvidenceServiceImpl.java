@@ -26,10 +26,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     public Evidence uploadEvidence(Long claimId, Evidence evidence) {
         DamageClaim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
-
         evidence.setClaim(claim);
-        // uploadedAt is auto-set by @PrePersist
-
         return evidenceRepository.save(evidence);
     }
 

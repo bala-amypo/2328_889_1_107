@@ -1,43 +1,32 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import com.example.demo.model.DamageClaim;
+import com.example.demo.service.DamageClaimService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "damage_claims")
-public class DamageClaim {
+@RestController
+@RequestMapping("/claims")
+public class DamageClaimController {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final DamageClaimService claimService;
 
-    @ManyToOne
-    @JoinColumn(name = "parcel_id", nullable = false)
-    private Parcel parcel;
-
-    private String claimDescription;
-
-    private String status = "PENDING";
-
-    private Double score;
-
-    @ManyToMany
-    @JoinTable(
-        name = "damage_claim_rule",
-        joinColumns = @JoinColumn(name = "claim_id"),
-        inverseJoinColumns = @JoinColumn(name = "rule_id")
-    )
-    private Set<ClaimRule> appliedRules = new HashSet<>();
-
-    @PrePersist
-    public void prePersist() {
-        this.filedAt = LocalDateTime.now();
+    public DamageClaimController(DamageClaimService claimService) {
+        this.claimService = claimService;
     }
 
-    private LocalDateTime filedAt;
+    @PostMapping("/file/{parcelId}")
+    public DamageClaim fileClaim(@PathVariable Long parcelId, @RequestBody DamageClaim claim) {
+        return claimService.fileClaim(parcelId, claim);
+    }
 
-    public DamageClaim() {}
-    // Getters and setters...
+    @PutMapping("/evaluate/{claimId}")
+    public DamageClaim evaluateClaim(@PathVariable Long claimId) {
+        return claimService.evaluateClaim(claimId);
+    }
+
+    @GetMapping("/{claimId}")
+    public ResponseEntity<DamageClaim> getClaim(@PathVariable Long claimId) {
+        return ResponseEntity.ok(claimService.getClaim(claimId));
+    }
 }

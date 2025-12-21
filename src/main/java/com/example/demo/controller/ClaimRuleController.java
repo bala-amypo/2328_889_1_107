@@ -1,14 +1,31 @@
-package com.example.demo.controller;
+package com.example.demo.model;
 
-import com.example.demo.dto.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
-@RestController
-public class ClaimRuleController {
+@Entity
+@Table(name = "claim_rules")
+public class ClaimRule {
 
-    @GetMapping("/claim-rule")
-    public ApiResponse getClaimRule() {
-        return new ApiResponse("Claim Rule fetched successfully");
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String ruleName;
+    private String conditionExpression;
+    private Double weight;
+
+    @ManyToMany(mappedBy = "appliedRules")
+    private Set<DamageClaim> appliedClaims = new HashSet<>();
+
+    public ClaimRule() {}
+
+    public ClaimRule(String ruleName, String conditionExpression, Double weight) {
+        this.ruleName = ruleName;
+        this.conditionExpression = conditionExpression;
+        this.weight = weight;
     }
+
+    // Getters and setters
 }
