@@ -1,25 +1,36 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.repository.ParcelRepository;
 import com.example.demo.model.Parcel;
+import com.example.demo.repository.ParcelRepository;
+import com.example.demo.service.ParcelService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
-public class ParcelServiceImpl {
+public class ParcelServiceImpl implements ParcelService {
 
     private final ParcelRepository parcelRepository;
 
-    // Old constructor for test
+    // Constructor for Spring / tests
     public ParcelServiceImpl(ParcelRepository parcelRepository) {
         this.parcelRepository = parcelRepository;
     }
 
-    // New constructor or no-arg for Spring
-    public ParcelServiceImpl() {
-        this.parcelRepository = null; // fallback
+    @Override
+    public Parcel addParcel(Parcel parcel) {
+        return parcelRepository.save(parcel);
     }
 
-    public void addParcel(Parcel parcel) {
-        if (parcelRepository != null) parcelRepository.save(parcel);
+    @Override
+    public List<Parcel> getAllParcels() {
+        return parcelRepository.findAll();
+    }
+
+    @Override
+    public Parcel getByTrackingNumber(String trackingNumber) {
+        Optional<Parcel> parcelOpt = parcelRepository.findByTrackingNumber(trackingNumber);
+        return parcelOpt.orElse(null); // match return type Parcel
     }
 }
