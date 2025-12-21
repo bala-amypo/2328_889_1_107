@@ -1,22 +1,50 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        // Dummy implementation to compile
-        return new AuthResponse("dummy-token");
+    @Autowired
+    private UserService userService;
+
+    // Create user (Sign up)
+    @PostMapping("/signup")
+    public User signup(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    @PostMapping("/register")
-    public ApiResponse register(@RequestBody AuthRequest request) {
-        return new ApiResponse("User registered successfully");
+    // Get all users
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    // Get user by ID
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Update user
+    @PutMapping("/users/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    // Delete user
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
