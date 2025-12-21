@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ClaimRule;
 import com.example.demo.service.ClaimRuleService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -12,18 +10,20 @@ import java.util.List;
 public class ClaimRuleController {
 
     private final ClaimRuleService ruleService;
-
-    public ClaimRuleController(ClaimRuleService ruleService) {
-        this.ruleService = ruleService;
-    }
+    public ClaimRuleController(ClaimRuleService ruleService) { this.ruleService = ruleService; }
 
     @PostMapping
-    public ClaimRule addRule(@RequestBody ClaimRule rule) {
-        return ruleService.addRule(rule);
-    }
+    public ClaimRule createRule(@RequestBody ClaimRule rule) { return ruleService.createRule(rule); }
+
+    @GetMapping("/{id}")
+    public ClaimRule getRule(@PathVariable Long id) { return ruleService.getRule(id); }
 
     @GetMapping
-    public ResponseEntity<List<ClaimRule>> getAllRules() {
-        return ResponseEntity.ok(ruleService.getAllRules());
-    }
+    public List<ClaimRule> getAllRules() { return ruleService.getAllRules(); }
+
+    @PutMapping
+    public ClaimRule updateRule(@RequestBody ClaimRule rule) { return ruleService.updateRule(rule); }
+
+    @DeleteMapping("/{id}")
+    public void deleteRule(@PathVariable Long id) { ruleService.deleteRule(id); }
 }
