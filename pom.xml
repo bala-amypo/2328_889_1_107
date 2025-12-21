@@ -23,14 +23,18 @@
 
 	<dependencies>
 
-	    <!-- MySQL Connector -->
+	    <!-- MySQL Connector (valid version) -->
 	    <dependency>
 	        <groupId>com.mysql</groupId>
 	        <artifactId>mysql-connector-j</artifactId>
-	        <version>8.3.3</version>
+	        <version>8.0.34</version>
 	    </dependency>
 
-	    <!-- Spring Boot Starters -->
+	    <!-- Validation, JPA, Web -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-validation</artifactId>
+	    </dependency>
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -39,18 +43,38 @@
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-web</artifactId>
 	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-tomcat</artifactId>
+	        <scope>provided</scope>
+	    </dependency>
 
-	    <!-- Swagger / OpenAPI -->
+	    <!-- Spring Security (optional) -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-security</artifactId>
+	    </dependency>
+
+	    <!-- JWT -->
+	    <dependency>
+	        <groupId>io.jsonwebtoken</groupId>
+	        <artifactId>jjwt</artifactId>
+	        <version>0.9.1</version>
+	    </dependency>
+
+	    <!-- Swagger -->
 	    <dependency>
 	        <groupId>org.springdoc</groupId>
 	        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 	        <version>2.3.0</version>
 	    </dependency>
 
-	    <!-- Validation -->
+	    <!-- Servlet API -->
 	    <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-validation</artifactId>
+	        <groupId>jakarta.servlet</groupId>
+	        <artifactId>jakarta.servlet-api</artifactId>
+	        <version>6.0.0</version>
+	        <scope>provided</scope>
 	    </dependency>
 
 	    <!-- Testing -->
