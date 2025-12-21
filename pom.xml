@@ -22,7 +22,13 @@
 	</properties>
 
 	<dependencies>
-	
+	    <!-- MySQL connector added -->
+	    <dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-j</artifactId>
+	        <version>8.3.3</version>
+	    </dependency>
+
 	    <!-- Validation, JPA, Web -->
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
