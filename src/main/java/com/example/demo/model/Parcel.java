@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class Parcel {
@@ -15,14 +16,19 @@ public class Parcel {
     private String receiverName;
     private String trackingNumber;
     private double weightKg;
-    private String status; // delivered, pending, etc.
+    private LocalDateTime deliveredAt;
 
     public Parcel() {}
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Restore old constructor
+    public Parcel(String senderName, String receiverName, String trackingNumber, double weightKg) {
+        this.senderName = senderName;
+        this.receiverName = receiverName;
+        this.trackingNumber = trackingNumber;
+        this.weightKg = weightKg;
+    }
 
+    // Old getters and setters
     public String getSenderName() { return senderName; }
     public void setSenderName(String senderName) { this.senderName = senderName; }
 
@@ -35,6 +41,6 @@ public class Parcel {
     public double getWeightKg() { return weightKg; }
     public void setWeightKg(double weightKg) { this.weightKg = weightKg; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public LocalDateTime getDeliveredAt() { return deliveredAt; }
+    public void setDeliveredAt(LocalDateTime deliveredAt) { this.deliveredAt = deliveredAt; }
 }

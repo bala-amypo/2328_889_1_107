@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.Parcel;
 import com.example.demo.repository.ParcelRepository;
+import com.example.demo.model.Parcel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,17 +9,17 @@ public class ParcelServiceImpl {
 
     private final ParcelRepository parcelRepository;
 
-    // If production code has no-arg constructor, tests must use it:
+    // Old constructor for test
     public ParcelServiceImpl(ParcelRepository parcelRepository) {
         this.parcelRepository = parcelRepository;
     }
 
+    // New constructor or no-arg for Spring
     public ParcelServiceImpl() {
-        this.parcelRepository = null; // fallback if no injection
+        this.parcelRepository = null; // fallback
     }
 
-    // Example service method
     public void addParcel(Parcel parcel) {
-        if(parcelRepository != null) parcelRepository.save(parcel);
+        if (parcelRepository != null) parcelRepository.save(parcel);
     }
 }

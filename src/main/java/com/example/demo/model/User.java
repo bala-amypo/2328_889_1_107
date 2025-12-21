@@ -11,28 +11,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;  // changed from 'name' if your code uses getUsername()
+    private String name;       // old field name
     private String email;
     private String password;
     private String role;
 
-    // Default constructor
-    public User() {}
+    public User() {} // default constructor
 
-    // Optional: Parameterized constructor (for convenience in tests)
-    public User(String username, String email, String password, String role) {
-        this.username = username;
+    // Restore old constructor used in test
+    public User(String name, String email, String password, String role) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    // Old getters and setters used in test
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
