@@ -17,9 +17,8 @@ public class ParcelServiceImpl implements ParcelService {
         this.parcelRepository = parcelRepository;
     }
 
-    // This method name must match ParcelService
     @Override
-    public Parcel register(Parcel parcel) {   // <-- use 'register' if interface has 'register'
+    public Parcel addParcel(Parcel parcel) {
         return parcelRepository.save(parcel);
     }
 
@@ -29,8 +28,7 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     @Override
-    public Parcel getByTrackingNumber(String trackingNumber) {
-        Optional<Parcel> parcelOpt = parcelRepository.findByTrackingNumber(trackingNumber);
-        return parcelOpt.orElse(null);
+    public Optional<Parcel> getByTrackingNumber(String trackingNumber) {
+        return parcelRepository.findByTrackingNumber(trackingNumber);
     }
 }
