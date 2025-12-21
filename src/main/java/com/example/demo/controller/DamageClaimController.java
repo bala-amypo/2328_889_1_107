@@ -2,31 +2,31 @@ package com.example.demo.controller;
 
 import com.example.demo.model.DamageClaim;
 import com.example.demo.service.DamageClaimService;
+import com.example.demo.dto.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/claims")
+@RequestMapping("/claims")
 public class DamageClaimController {
 
-    private final DamageClaimService service;
+    private final DamageClaimService claimService;
 
-    public DamageClaimController(DamageClaimService service) {
-        this.service = service;
+    public DamageClaimController(DamageClaimService claimService) {
+        this.claimService = claimService;
     }
 
     @PostMapping("/file/{parcelId}")
-    public DamageClaim file(@PathVariable Long parcelId,
-                            @RequestBody DamageClaim claim) {
-        return service.fileClaim(parcelId, claim);
+    public DamageClaim fileClaim(@PathVariable Long parcelId, @RequestBody DamageClaim claim) {
+        return claimService.fileClaim(parcelId, claim);
     }
 
     @PutMapping("/evaluate/{claimId}")
-    public DamageClaim evaluate(@PathVariable Long claimId) {
-        return service.evaluateClaim(claimId);
+    public DamageClaim evaluateClaim(@PathVariable Long claimId) {
+        return claimService.evaluateClaim(claimId);
     }
 
     @GetMapping("/{claimId}")
-    public DamageClaim get(@PathVariable Long claimId) {
-        return service.evaluateClaim(claimId);
+    public DamageClaim getClaim(@PathVariable Long claimId) {
+        return claimService.getClaim(claimId);
     }
 }

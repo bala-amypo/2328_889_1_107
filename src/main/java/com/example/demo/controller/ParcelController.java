@@ -2,25 +2,27 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Parcel;
 import com.example.demo.service.ParcelService;
+import com.example.demo.dto.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/parcels")
+@RequestMapping("/parcels")
 public class ParcelController {
 
-    private final ParcelService service;
+    private final ParcelService parcelService;
 
-    public ParcelController(ParcelService service) {
-        this.service = service;
+    public ParcelController(ParcelService parcelService) {
+        this.parcelService = parcelService;
     }
 
     @PostMapping
-    public Parcel add(@RequestBody Parcel parcel) {
-        return service.addParcel(parcel);
+    public ApiResponse addParcel(@RequestBody Parcel parcel) {
+        Parcel savedParcel = parcelService.addParcel(parcel);
+        return new ApiResponse(true, "Parcel added successfully", savedParcel);
     }
 
     @GetMapping("/tracking/{trackingNumber}")
-    public Parcel get(@PathVariable String trackingNumber) {
-        return service.getByTrackingNumber(trackingNumber);
+    public Parcel getParcel(@PathVariable String trackingNumber) {
+        return parcelService.getByTrackingNumber(trackingNumber);
     }
 }
