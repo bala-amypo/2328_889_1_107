@@ -22,6 +22,7 @@
 	</properties>
 
 	<dependencies>
+	
 	    <!-- Validation, JPA, Web -->
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
