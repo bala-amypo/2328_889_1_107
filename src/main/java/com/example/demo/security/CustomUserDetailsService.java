@@ -1,26 +1,36 @@
 package com.example.demo.security;
 
+import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository repo) {
-        this.repo = repo;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
-        return repo.findByEmail(email)
-                .map(user -> User.withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .roles(user.getRole())
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("not found"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singleton(authority)
+        );
     }
 }
