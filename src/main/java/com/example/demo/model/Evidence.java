@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "evidence")
 public class Evidence {
 
     @Id
@@ -11,29 +12,37 @@ public class Evidence {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "claim_id", nullable = false)
     private DamageClaim claim;
 
     private String evidenceType;
+
     private String fileUrl;
+
     private LocalDateTime uploadedAt;
 
-    public Evidence() {}
+    // 🔹 No-arg constructor
+    public Evidence() {
+    }
 
+    // 🔹 Auto-set upload timestamp
     @PrePersist
-    public void onUpload() {
+    protected void onUpload() {
         this.uploadedAt = LocalDateTime.now();
     }
+
+    // 🔹 Getters and Setters
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public DamageClaim getClaim() {
         return claim;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setClaim(DamageClaim claim) {
@@ -58,9 +67,5 @@ public class Evidence {
 
     public LocalDateTime getUploadedAt() {
         return uploadedAt;
-    }
-
-    public void setUploadedAt(LocalDateTime uploadedAt) {
-        this.uploadedAt = uploadedAt;
     }
 }

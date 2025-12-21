@@ -2,9 +2,12 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 @Entity
+@Table(name = "damage_claims")
 public class DamageClaim {
 
     @Id
@@ -12,34 +15,52 @@ public class DamageClaim {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "parcel_id", nullable = false)
     private Parcel parcel;
 
+    @Column(length = 1000)
     private String claimDescription;
+
     private LocalDateTime filedAt;
+
     private String status;
+
     private Double score;
 
     @ManyToMany
-    private List<ClaimRule> appliedRules;
+    @JoinTable(
+        name = "claim_applied_rules",
+        joinColumns = @JoinColumn(name = "claim_id"),
+        inverseJoinColumns = @JoinColumn(name = "rule_id")
+    )
+    private Set<ClaimRule> appliedRules = new HashSet<>();
 
-    public DamageClaim() {}
+    @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
+    private List<Evidence> evidenceList;
 
-    @PrePersist
-    public void onCreate() {
-        this.filedAt = LocalDateTime.now();
+    // 🔹 No-arg constructor
+    public DamageClaim() {
         this.status = "PENDING";
     }
+
+    // 🔹 Auto-set filedAt timestamp
+    @PrePersist
+    protected void onCreate() {
+        this.filedAt = LocalDateTime.now();
+    }
+
+    // 🔹 Getters and Setters
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Parcel getParcel() {
         return parcel;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setParcel(Parcel parcel) {
@@ -58,31 +79,35 @@ public class DamageClaim {
         return filedAt;
     }
 
-    public void setFiledAt(LocalDateTime filedAt) {
-        this.filedAt = filedAt;
-    }
-
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Double getScore() {
         return score;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public void setScore(Double score) {
         this.score = score;
     }
 
-    public List<ClaimRule> getAppliedRules() {
+    public Set<ClaimRule> getAppliedRules() {
         return appliedRules;
     }
 
-    public void setAppliedRules(List<ClaimRule> appliedRules) {
+    public void setAppliedRules(Set<ClaimRule> appliedRules) {
         this.appliedRules = appliedRules;
+    }
+
+    public List<Evidence> getEvidenceList() {
+        return evidenceList;
+    }
+
+    public void setEvidenceList(List<Evidence> evidenceList) {
+        this.evidenceList = evidenceList;
     }
 }
