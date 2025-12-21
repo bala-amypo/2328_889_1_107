@@ -1,14 +1,43 @@
-package com.example.demo.controller;
+package com.example.demo.model;
 
-import com.example.demo.dto.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@RestController
-public class DamageClaimController {
+@Entity
+@Table(name = "damage_claims")
+public class DamageClaim {
 
-    @GetMapping("/damage-claim")
-    public ApiResponse getDamageClaim() {
-        return new ApiResponse("Damage Claim fetched successfully");
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "parcel_id", nullable = false)
+    private Parcel parcel;
+
+    private String claimDescription;
+
+    private String status = "PENDING";
+
+    private Double score;
+
+    @ManyToMany
+    @JoinTable(
+        name = "damage_claim_rule",
+        joinColumns = @JoinColumn(name = "claim_id"),
+        inverseJoinColumns = @JoinColumn(name = "rule_id")
+    )
+    private Set<ClaimRule> appliedRules = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.filedAt = LocalDateTime.now();
     }
+
+    private LocalDateTime filedAt;
+
+    public DamageClaim() {}
+    // Getters and setters...
 }
