@@ -14,28 +14,25 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Constructor for Spring (with PasswordEncoder)
+    // Constructor for Spring
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Constructor for test code (without PasswordEncoder)
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = null;
-    }
-
     @Override
-    public User addUser(User user) {
-        if(passwordEncoder != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+    public User register(User user) {   // <-- must match interface method name
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

@@ -13,13 +13,13 @@ public class ParcelServiceImpl implements ParcelService {
 
     private final ParcelRepository parcelRepository;
 
-    // Constructor for Spring / tests
     public ParcelServiceImpl(ParcelRepository parcelRepository) {
         this.parcelRepository = parcelRepository;
     }
 
+    // This method name must match ParcelService
     @Override
-    public Parcel addParcel(Parcel parcel) {
+    public Parcel register(Parcel parcel) {   // <-- use 'register' if interface has 'register'
         return parcelRepository.save(parcel);
     }
 
@@ -31,6 +31,6 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public Parcel getByTrackingNumber(String trackingNumber) {
         Optional<Parcel> parcelOpt = parcelRepository.findByTrackingNumber(trackingNumber);
-        return parcelOpt.orElse(null); // match return type Parcel
+        return parcelOpt.orElse(null);
     }
 }
