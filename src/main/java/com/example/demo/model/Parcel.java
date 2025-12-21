@@ -14,21 +14,16 @@ public class Parcel {
 
     private String destination;
 
+    private double weightKg;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Constructors
-    public Parcel() {
-    }
+    public Parcel() {}
 
-    public Parcel(String trackingNumber, String destination, User user) {
-        this.trackingNumber = trackingNumber;
-        this.destination = destination;
-        this.user = user;
-    }
-
-    // Getters and Setters
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -51,6 +46,14 @@ public class Parcel {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public double getWeightKg() {
+        return weightKg;
+    }
+
+    public void setWeightKg(double weightKg) {
+        this.weightKg = weightKg;
     }
 
     public User getUser() {
