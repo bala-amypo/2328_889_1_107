@@ -1,31 +1,29 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import com.example.demo.model.ClaimRule;
+import com.example.demo.service.ClaimRuleService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "claim_rules")
-public class ClaimRule {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RestController
+@RequestMapping("/rules")
+public class ClaimRuleController {
 
-    private String ruleName;
-    private String conditionExpression;
-    private Double weight;
+    private final ClaimRuleService ruleService;
 
-    @ManyToMany(mappedBy = "appliedRules")
-    private Set<DamageClaim> appliedClaims = new HashSet<>();
-
-    public ClaimRule() {}
-
-    public ClaimRule(String ruleName, String conditionExpression, Double weight) {
-        this.ruleName = ruleName;
-        this.conditionExpression = conditionExpression;
-        this.weight = weight;
+    public ClaimRuleController(ClaimRuleService ruleService) {
+        this.ruleService = ruleService;
     }
 
-    // Getters and setters
+    @PostMapping
+    public ClaimRule addRule(@RequestBody ClaimRule rule) {
+        return ruleService.addRule(rule);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClaimRule>> getAllRules() {
+        return ResponseEntity.ok(ruleService.getAllRules());
+    }
 }
