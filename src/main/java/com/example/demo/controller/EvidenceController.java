@@ -17,7 +17,7 @@ public class EvidenceController {
 
     @PostMapping("/upload/{claimId}")
     public Evidence uploadEvidence(@PathVariable Long claimId, @RequestBody Evidence evidence) {
-        // Corrected: Service now handles the claimId lookup directly
+        // Now compatible: Long claimId is passed to service method expecting Long
         return evidenceService.uploadEvidence(claimId, evidence);
     }
 

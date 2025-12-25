@@ -7,6 +7,7 @@ import com.example.demo.repository.DamageClaimRepository;
 import com.example.demo.service.EvidenceService;
 import com.example.demo.exception.BadRequestException;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,7 +16,6 @@ public class EvidenceServiceImpl implements EvidenceService {
     private final EvidenceRepository evidenceRepository;
     private final DamageClaimRepository claimRepository;
 
-    // REQUIRED: Fixes constructor error in Screenshot 225241
     public EvidenceServiceImpl(EvidenceRepository evidenceRepository, DamageClaimRepository claimRepository) {
         this.evidenceRepository = evidenceRepository;
         this.claimRepository = claimRepository;
@@ -27,6 +27,7 @@ public class EvidenceServiceImpl implements EvidenceService {
                 .orElseThrow(() -> new BadRequestException("Claim not found"));
         
         evidence.setDamageClaim(claim);
+        evidence.setUploadedAt(LocalDateTime.now()); // Good practice for tests
         return evidenceRepository.save(evidence);
     }
 

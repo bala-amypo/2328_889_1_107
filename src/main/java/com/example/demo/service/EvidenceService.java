@@ -4,7 +4,7 @@ import com.example.demo.model.Evidence;
 import java.util.List;
 
 public interface EvidenceService {
-    // REQUIRED: Test suite calls uploadEvidence(Long, Evidence)
+    // This signature matches your Controller's needs
     Evidence uploadEvidence(Long claimId, Evidence evidence);
     
     List<Evidence> getEvidenceForClaim(Long claimId);
