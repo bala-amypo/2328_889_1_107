@@ -20,21 +20,23 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     @Override
-    public Parcel updateParcel(Long id, Parcel parcel) {
-        Parcel existing = parcelRepository.findById(id)
+    public Optional<Parcel> getByTrackingNumber(String trackingNumber) {
+        return parcelRepository.findByTrackingNumber(trackingNumber);
+    }
+
+    @Override
+    public Parcel updateParcel(Long id, Parcel updatedParcel) {
+        Parcel parcel = parcelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Parcel not found"));
-        existing.setTrackingNumber(parcel.getTrackingNumber());
-        existing.setDescription(parcel.getDescription());
-        return parcelRepository.save(existing);
+
+        parcel.setTrackingNumber(updatedParcel.getTrackingNumber());
+        parcel.setDescription(updatedParcel.getDescription()); // make sure description exists in Parcel model
+
+        return parcelRepository.save(parcel);
     }
 
     @Override
     public void deleteParcel(Long id) {
         parcelRepository.deleteById(id);
-    }
-
-    @Override
-    public Optional<Parcel> getByTrackingNumber(String trackingNumber) {
-        return parcelRepository.findByTrackingNumber(trackingNumber);
     }
 }

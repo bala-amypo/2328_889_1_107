@@ -7,9 +7,9 @@ public interface ParcelService {
 
     Parcel addParcel(Parcel parcel);
 
+    Optional<Parcel> getByTrackingNumber(String trackingNumber);
+
     Parcel updateParcel(Long id, Parcel parcel);
 
     void deleteParcel(Long id);
-
-    Optional<Parcel> getByTrackingNumber(String trackingNumber);
 }
