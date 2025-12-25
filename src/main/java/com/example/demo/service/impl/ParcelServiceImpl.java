@@ -22,19 +22,24 @@ public class ParcelServiceImpl implements ParcelService {
     public Parcel addParcel(Parcel parcel) {
 
         if (parcelRepository.existsByTrackingNumber(parcel.getTrackingNumber())) {
-            throw new BadRequestException("Tracking number already exists");
+            throw new BadRequestException("tracking number exists");
         }
 
         if (parcel.getWeightKg() == null || parcel.getWeightKg() <= 0) {
-            throw new BadRequestException("weight must be greater than zero");
+            throw new BadRequestException("weight must be greater than 0");
         }
 
         return parcelRepository.save(parcel);
     }
 
     @Override
-    public Parcel getByTrackingNumber(String trackingNumber) {
+    public Parcel getParcelById(Long id) {
+        return parcelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Parcel not found"));
+    }
 
+    @Override
+    public Parcel getByTrackingNumber(String trackingNumber) {
         return parcelRepository.findByTrackingNumber(trackingNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Parcel not found"));
     }
@@ -42,6 +47,20 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public List<Parcel> getAllParcels() {
         return parcelRepository.findAll();
+    }
+
+    @Override
+    public Parcel updateParcel(Long id, Parcel parcel) {
+
+        Parcel existing = parcelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Parcel not found"));
+
+        existing.setSenderName(parcel.getSenderName());
+        existing.setReceiverName(parcel.getReceiverName());
+        existing.setWeightKg(parcel.getWeightKg());
+        existing.setDeliveredAt(parcel.getDeliveredAt());
+
+        return parcelRepository.save(existing);
     }
 
     @Override
