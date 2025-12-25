@@ -21,7 +21,7 @@ public class ParcelController {
     }
 
     @GetMapping("/tracking/{trackingNumber}")
-    public ResponseEntity<Parcel> getParcel(@PathVariable String trackingNumber) {
+    public ResponseEntity<Parcel> getByTrackingNumber(@PathVariable String trackingNumber) {
         return ResponseEntity.ok(parcelService.getByTrackingNumber(trackingNumber));
     }
 }
