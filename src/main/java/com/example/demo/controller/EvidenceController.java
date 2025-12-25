@@ -23,7 +23,7 @@ public class EvidenceController {
     }
 
     @GetMapping("/claim/{claimId}")
-    public ResponseEntity<List<Evidence>> getEvidence(@PathVariable Long claimId) {
+    public ResponseEntity<List<Evidence>> getEvidenceForClaim(@PathVariable Long claimId) {
         return ResponseEntity.ok(evidenceService.getEvidenceForClaim(claimId));
     }
 }
