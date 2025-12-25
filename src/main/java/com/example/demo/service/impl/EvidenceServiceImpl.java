@@ -16,7 +16,8 @@ public class EvidenceServiceImpl implements EvidenceService {
     private final EvidenceRepository evidenceRepository;
     private final DamageClaimRepository claimRepository;
 
-    public EvidenceServiceImpl(EvidenceRepository evidenceRepository, DamageClaimRepository claimRepository) {
+    public EvidenceServiceImpl(EvidenceRepository evidenceRepository,
+                               DamageClaimRepository claimRepository) {
         this.evidenceRepository = evidenceRepository;
         this.claimRepository = claimRepository;
     }
@@ -24,7 +25,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Override
     public Evidence uploadEvidence(Long claimId, Evidence evidence) {
         DamageClaim claim = claimRepository.findById(claimId)
-                .orElseThrow(() -> new BadRequestException("Claim not found with id " + claimId));
+                .orElseThrow(() -> new BadRequestException("DamageClaim not found with id " + claimId));
 
         evidence.setClaim(claim);
         return evidenceRepository.save(evidence);
@@ -33,7 +34,8 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Override
     public List<Evidence> getEvidenceForClaim(Long claimId) {
         DamageClaim claim = claimRepository.findById(claimId)
-                .orElseThrow(() -> new BadRequestException("Claim not found with id " + claimId));
-        return evidenceRepository.findAllByClaim(claim);  // use findAllByClaim instead of findByClaim
+                .orElseThrow(() -> new BadRequestException("DamageClaim not found with id " + claimId));
+
+        return evidenceRepository.findByClaim(claim);
     }
 }

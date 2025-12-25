@@ -18,25 +18,52 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     @Override
-    public Parcel addParcel(Parcel parcel) {
+    public Parcel createParcel(Parcel parcel) {
+        if (parcelRepository.existsByTrackingNumber(parcel.getTrackingNumber())) {
+            throw new BadRequestException("Parcel with tracking number already exists");
+        }
         return parcelRepository.save(parcel);
     }
 
     @Override
-    public Parcel getParcel(Long id) {
+    public Parcel getParcelById(Long id) {
         return parcelRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
     }
 
     @Override
-    public void deleteParcel(Long id) {
-        Parcel parcel = parcelRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
-        parcelRepository.delete(parcel);
+    public List<Parcel> getAllParcels() {
+        return parcelRepository.findAll();
     }
 
     @Override
-    public List<Parcel> getAllParcels() {
-        return parcelRepository.findAll();
+    public Parcel updateParcel(Long id, Parcel parcel) {
+        Parcel existing = parcelRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
+
+        existing.setWeightKg(parcel.getWeightKg());
+        existing.setSenderName(parcel.getSenderName());
+        existing.setReceiverName(parcel.getReceiverName());
+        existing.setDeliveredAt(parcel.getDeliveredAt());
+
+        return parcelRepository.save(existing);
+    }
+
+    @Override
+    public void deleteParcel(Long id) {
+        Parcel existing = parcelRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
+        parcelRepository.delete(existing);
+    }
+
+    @Override
+    public boolean existsByTrackingNumber(String trackingNumber) {
+        return parcelRepository.existsByTrackingNumber(trackingNumber);
+    }
+
+    @Override
+    public Parcel findByTrackingNumber(String trackingNumber) {
+        return parcelRepository.findByTrackingNumber(trackingNumber)
+                .orElseThrow(() -> new BadRequestException("Parcel not found with tracking number " + trackingNumber));
     }
 }
