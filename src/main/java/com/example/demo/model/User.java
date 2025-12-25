@@ -19,6 +19,7 @@ public class User {
 
     public User() {}
 
+    // REQUIRED: Fixes errors on lines 64, 75, 89, 483, 490, 496, 536 of Test Suite
     public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;

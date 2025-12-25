@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
     
-    // Fixes Service error: method findByDamageClaim
-    List<Evidence> findByDamageClaim(DamageClaim damageClaim);
-
-    // Fixes Test Suite errors: count and find by ID
+    // REQUIRED: Fixes errors on lines 565, 566, 572, 656, 657
     long countByDamageClaim_Id(Long claimId);
     List<Evidence> findByDamageClaim_Id(Long claimId);
+    
+    // For your internal Service
+    List<Evidence> findByDamageClaim(DamageClaim damageClaim);
 }
