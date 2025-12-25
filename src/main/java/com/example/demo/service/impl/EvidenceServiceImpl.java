@@ -18,14 +18,12 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Override
     public Evidence uploadEvidence(Evidence evidence, DamageClaim claim) {
-        // This matches the updated Evidence model field name
-        evidence.setDamageClaim(claim); 
+        evidence.setDamageClaim(claim);
         return evidenceRepository.save(evidence);
     }
 
     @Override
-    public List<Evidence> getEvidenceByClaim(DamageClaim claim) {
-        // This matches the updated Repository method name
-        return evidenceRepository.findByDamageClaim(claim);
+    public List<Evidence> getEvidenceForClaim(Long claimId) {
+        return evidenceRepository.findByDamageClaim_Id(claimId);
     }
 }

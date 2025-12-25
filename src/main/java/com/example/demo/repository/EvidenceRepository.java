@@ -6,11 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
-    
-    // REQUIRED: Fixes errors on lines 565, 566, 572, 656, 657
-    long countByDamageClaim_Id(Long claimId);
-    List<Evidence> findByDamageClaim_Id(Long claimId);
-    
-    // For your internal Service
+    // For Service Logic
     List<Evidence> findByDamageClaim(DamageClaim damageClaim);
+
+    // For MasterTestSuiteTest Logic (using underscore for nested property ID)
+    List<Evidence> findByDamageClaim_Id(Long claimId);
+    long countByDamageClaim_Id(Long claimId);
 }
