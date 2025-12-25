@@ -18,6 +18,8 @@ public class DamageClaim {
 
     private double score;
 
+    private String claimDescription; // added
+
     @ManyToOne
     @JoinColumn(name = "parcel_id")
     private Parcel parcel;
@@ -48,4 +50,7 @@ public class DamageClaim {
 
     public Set<ClaimRule> getAppliedRules() { return appliedRules; }
     public void setAppliedRules(Set<ClaimRule> appliedRules) { this.appliedRules = appliedRules; }
+
+    public String getClaimDescription() { return claimDescription; }
+    public void setClaimDescription(String claimDescription) { this.claimDescription = claimDescription; }
 }
