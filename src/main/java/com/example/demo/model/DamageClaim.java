@@ -18,7 +18,7 @@ public class DamageClaim {
 
     private double score;
 
-    private String claimDescription; // added
+    private String claimDescription;
 
     @ManyToOne
     @JoinColumn(name = "parcel_id")
@@ -31,6 +31,17 @@ public class DamageClaim {
         inverseJoinColumns = @JoinColumn(name = "rule_id")
     )
     private Set<ClaimRule> appliedRules;
+
+    // MANDATORY: Default Constructor
+    public DamageClaim() {}
+
+    // RECOMMENDED: Constructor for testing
+    public DamageClaim(String claimDescription, String status, double score) {
+        this.claimDescription = claimDescription;
+        this.status = status;
+        this.score = score;
+        this.filedAt = LocalDateTime.now();
+    }
 
     // Getters and Setters
     public Long getId() { return id; }
