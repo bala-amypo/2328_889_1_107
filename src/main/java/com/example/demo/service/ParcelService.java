@@ -1,22 +1,15 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Parcel;
-
-import java.util.List;
+import java.util.Optional;
 
 public interface ParcelService {
 
-    Parcel createParcel(Parcel parcel);
-
-    Parcel getParcelById(Long id);
-
-    List<Parcel> getAllParcels();
+    Parcel addParcel(Parcel parcel);
 
     Parcel updateParcel(Long id, Parcel parcel);
 
     void deleteParcel(Long id);
 
-    boolean existsByTrackingNumber(String trackingNumber);
-
-    Parcel findByTrackingNumber(String trackingNumber);
+    Optional<Parcel> getByTrackingNumber(String trackingNumber);
 }
