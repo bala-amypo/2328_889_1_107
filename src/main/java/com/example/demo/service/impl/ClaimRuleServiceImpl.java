@@ -11,24 +11,22 @@ import java.util.List;
 @Service
 public class ClaimRuleServiceImpl implements ClaimRuleService {
 
-    private final ClaimRuleRepository ruleRepository;
+    private final ClaimRuleRepository claimRuleRepository;
 
-    public ClaimRuleServiceImpl(ClaimRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
+    public ClaimRuleServiceImpl(ClaimRuleRepository claimRuleRepository) {
+        this.claimRuleRepository = claimRuleRepository;
     }
 
     @Override
     public ClaimRule addRule(ClaimRule rule) {
-
-        if (rule.getWeight() == null || rule.getWeight() < 0) {
-            throw new BadRequestException("Rule weight must be >= 0");
+        if (rule.getWeight() <= 0) {
+            throw new BadRequestException("Rule weight must be > 0");
         }
-
-        return ruleRepository.save(rule);
+        return claimRuleRepository.save(rule);
     }
 
     @Override
     public List<ClaimRule> getAllRules() {
-        return ruleRepository.findAll();
+        return claimRuleRepository.findAll();
     }
 }
