@@ -15,15 +15,14 @@ public class DamageClaim {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "parcel_id", nullable = false)
+    @JoinColumn(name = "parcel_id")
     private Parcel parcel;
 
-    @Column(length = 1000)
     private String claimDescription;
 
     private LocalDateTime filedAt;
 
-    private String status;
+    private String status = "PENDING";
 
     private Double score;
 
@@ -35,79 +34,38 @@ public class DamageClaim {
     )
     private Set<ClaimRule> appliedRules = new HashSet<>();
 
-    @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
-    private List<Evidence> evidenceList;
+    @OneToMany(mappedBy = "claim")
+    private List<Evidence> evidences;
 
-    // 🔹 No-arg constructor
-    public DamageClaim() {
-        this.status = "PENDING";
-    }
+    public DamageClaim() {}
 
-    // 🔹 Auto-set filedAt timestamp
     @PrePersist
-    protected void onCreate() {
-        this.filedAt = LocalDateTime.now();
+    public void prePersist() {
+        if (filedAt == null) filedAt = LocalDateTime.now();
     }
 
-    // 🔹 Getters and Setters
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public Parcel getParcel() { return parcel; }
+    public void setParcel(Parcel parcel) { this.parcel = parcel; }
 
-    public Parcel getParcel() {
-        return parcel;
-    }
+    public String getClaimDescription() { return claimDescription; }
+    public void setClaimDescription(String claimDescription) { this.claimDescription = claimDescription; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDateTime getFiledAt() { return filedAt; }
+    public void setFiledAt(LocalDateTime filedAt) { this.filedAt = filedAt; }
 
-    public void setParcel(Parcel parcel) {
-        this.parcel = parcel;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getClaimDescription() {
-        return claimDescription;
-    }
+    public Double getScore() { return score; }
+    public void setScore(Double score) { this.score = score; }
 
-    public void setClaimDescription(String claimDescription) {
-        this.claimDescription = claimDescription;
-    }
+    public Set<ClaimRule> getAppliedRules() { return appliedRules; }
+    public void setAppliedRules(Set<ClaimRule> appliedRules) { this.appliedRules = appliedRules; }
 
-    public LocalDateTime getFiledAt() {
-        return filedAt;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
-    public Set<ClaimRule> getAppliedRules() {
-        return appliedRules;
-    }
-
-    public void setAppliedRules(Set<ClaimRule> appliedRules) {
-        this.appliedRules = appliedRules;
-    }
-
-    public List<Evidence> getEvidenceList() {
-        return evidenceList;
-    }
-
-    public void setEvidenceList(List<Evidence> evidenceList) {
-        this.evidenceList = evidenceList;
-    }
+    public List<Evidence> getEvidences() { return evidences; }
+    public void setEvidences(List<Evidence> evidences) { this.evidences = evidences; }
 }

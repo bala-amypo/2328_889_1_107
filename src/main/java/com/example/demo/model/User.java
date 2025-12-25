@@ -1,3 +1,8 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -5,17 +10,26 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+
     private String role = "AGENT";
 
+    @OneToMany(mappedBy = "user")
+    private List<Parcel> parcels;
+
     public User() {}
+
     public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role != null ? role : "AGENT";
+        if (role != null) this.role = role;
     }
 
     // Getters & Setters
@@ -33,4 +47,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public List<Parcel> getParcels() { return parcels; }
+    public void setParcels(List<Parcel> parcels) { this.parcels = parcels; }
 }
