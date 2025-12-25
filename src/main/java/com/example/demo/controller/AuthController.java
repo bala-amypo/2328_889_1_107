@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.ApiResponse;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
@@ -25,23 +25,24 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
+        // Encode password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userService.register(user);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully", savedUser));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         User user = userService.findByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body(
-                    new AuthResponse(null, null, null, null)
-            );
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Invalid credentials"));
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
 
-        return ResponseEntity.ok(new AuthResponse(token, user.getId(), user.getEmail(), user.getRole()));
+        AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+        return ResponseEntity.ok(response);
     }
 }
