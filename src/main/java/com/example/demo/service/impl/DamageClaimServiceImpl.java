@@ -1,29 +1,41 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.DamageClaim;
+import com.example.demo.model.Parcel;
 import com.example.demo.repository.DamageClaimRepository;
-import org.springframework.stereotype.Service;
+import com.example.demo.repository.ParcelRepository;
 import com.example.demo.service.DamageClaimService;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DamageClaimServiceImpl implements DamageClaimService {
 
     private final DamageClaimRepository claimRepository;
-    public DamageClaimServiceImpl(DamageClaimRepository claimRepository) { this.claimRepository = claimRepository; }
+    private final ParcelRepository parcelRepository;
+
+    public DamageClaimServiceImpl(DamageClaimRepository claimRepository,
+                                  ParcelRepository parcelRepository) {
+        this.claimRepository = claimRepository;
+        this.parcelRepository = parcelRepository;
+    }
 
     @Override
-    public DamageClaim createClaim(DamageClaim claim) { return claimRepository.save(claim); }
+    public DamageClaim fileClaim(Long parcelId, DamageClaim claim) {
+
+        Parcel parcel = parcelRepository.findById(parcelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Parcel not found"));
+
+        claim.setParcel(parcel);
+        claim.setStatus("PENDING");
+
+        return claimRepository.save(claim);
+    }
 
     @Override
-    public DamageClaim getClaim(Long id) { return claimRepository.findById(id).orElse(null); }
+    public DamageClaim getClaim(Long claimId) {
 
-    @Override
-    public List<DamageClaim> getAllClaims() { return claimRepository.findAll(); }
-
-    @Override
-    public DamageClaim updateClaim(DamageClaim claim) { return claimRepository.save(claim); }
-
-    @Override
-    public void deleteClaim(Long id) { claimRepository.deleteById(id); }
+        return claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+    }
 }

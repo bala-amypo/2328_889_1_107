@@ -4,9 +4,12 @@ import com.example.demo.model.Parcel;
 import java.util.List;
 
 public interface ParcelService {
+
     Parcel addParcel(Parcel parcel);
-    Parcel getParcel(Long id);
+
+    Parcel getByTrackingNumber(String trackingNumber);
+
     List<Parcel> getAllParcels();
-    Parcel updateParcel(Parcel parcel);
+
     void deleteParcel(Long id);
 }

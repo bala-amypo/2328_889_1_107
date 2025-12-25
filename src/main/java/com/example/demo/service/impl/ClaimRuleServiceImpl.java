@@ -1,29 +1,27 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.ClaimRule;
 import com.example.demo.repository.ClaimRuleRepository;
 import com.example.demo.service.ClaimRuleService;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class ClaimRuleServiceImpl implements ClaimRuleService {
 
     private final ClaimRuleRepository ruleRepository;
-    public ClaimRuleServiceImpl(ClaimRuleRepository ruleRepository) { this.ruleRepository = ruleRepository; }
+
+    public ClaimRuleServiceImpl(ClaimRuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
+    }
 
     @Override
-    public ClaimRule createRule(ClaimRule rule) { return ruleRepository.save(rule); }
+    public ClaimRule addRule(ClaimRule rule) {
 
-    @Override
-    public ClaimRule getRule(Long id) { return ruleRepository.findById(id).orElse(null); }
+        if (rule.getWeight() == null || rule.getWeight() < 0) {
+            throw new BadRequestException("weight must be greater than or equal to zero");
+        }
 
-    @Override
-    public List<ClaimRule> getAllRules() { return ruleRepository.findAll(); }
-
-    @Override
-    public ClaimRule updateRule(ClaimRule rule) { return ruleRepository.save(rule); }
-
-    @Override
-    public void deleteRule(Long id) { ruleRepository.deleteById(id); }
+        return ruleRepository.save(rule);
+    }
 }
