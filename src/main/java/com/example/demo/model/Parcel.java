@@ -1,9 +1,6 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Parcel {
@@ -13,8 +10,11 @@ public class Parcel {
     private Long id;
 
     private String trackingNumber;
-
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -24,4 +24,7 @@ public class Parcel {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
