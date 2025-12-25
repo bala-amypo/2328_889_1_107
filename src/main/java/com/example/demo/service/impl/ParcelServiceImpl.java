@@ -6,6 +6,8 @@ import com.example.demo.repository.ParcelRepository;
 import com.example.demo.service.ParcelService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ParcelServiceImpl implements ParcelService {
 
@@ -17,20 +19,24 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Override
     public Parcel addParcel(Parcel parcel) {
-        if (parcelRepository.existsByTrackingNumber(parcel.getTrackingNumber())) {
-            throw new BadRequestException("Parcel with this tracking number already exists");
-        }
-
-        if (parcel.getWeightKg() == null || parcel.getWeightKg() <= 0) {
-            throw new BadRequestException("Parcel weight must be > 0");
-        }
-
         return parcelRepository.save(parcel);
     }
 
     @Override
-    public Parcel getByTrackingNumber(String trackingNumber) {
-        return parcelRepository.findByTrackingNumber(trackingNumber)
-                .orElseThrow(() -> new BadRequestException("Parcel not found"));
+    public Parcel getParcel(Long id) {
+        return parcelRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
+    }
+
+    @Override
+    public void deleteParcel(Long id) {
+        Parcel parcel = parcelRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Parcel not found with id " + id));
+        parcelRepository.delete(parcel);
+    }
+
+    @Override
+    public List<Parcel> getAllParcels() {
+        return parcelRepository.findAll();
     }
 }
