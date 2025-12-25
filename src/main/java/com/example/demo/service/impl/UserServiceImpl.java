@@ -1,58 +1,44 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
-    public User addUser(User user) {
+    public User register(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
+
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("AGENT");
+        }
+
+        // Hash password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User updateUser(Long id, User user) {
-
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPhone(user.getPhone());
-
-        return userRepository.save(existingUser);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        userRepository.deleteById(id);
     }
 }

@@ -6,6 +6,8 @@ import com.example.demo.repository.ClaimRuleRepository;
 import com.example.demo.service.ClaimRuleService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ClaimRuleServiceImpl implements ClaimRuleService {
 
@@ -19,9 +21,14 @@ public class ClaimRuleServiceImpl implements ClaimRuleService {
     public ClaimRule addRule(ClaimRule rule) {
 
         if (rule.getWeight() == null || rule.getWeight() < 0) {
-            throw new BadRequestException("weight must be greater than or equal to zero");
+            throw new BadRequestException("Rule weight must be >= 0");
         }
 
         return ruleRepository.save(rule);
+    }
+
+    @Override
+    public List<ClaimRule> getAllRules() {
+        return ruleRepository.findAll();
     }
 }
