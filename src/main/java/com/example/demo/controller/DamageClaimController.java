@@ -2,28 +2,31 @@ package com.example.demo.controller;
 
 import com.example.demo.model.DamageClaim;
 import com.example.demo.service.DamageClaimService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/claims")
 public class DamageClaimController {
 
     private final DamageClaimService claimService;
-    public DamageClaimController(DamageClaimService claimService) { this.claimService = claimService; }
 
-    @PostMapping
-    public DamageClaim createClaim(@RequestBody DamageClaim claim) { return claimService.createClaim(claim); }
+    public DamageClaimController(DamageClaimService claimService) {
+        this.claimService = claimService;
+    }
 
-    @GetMapping("/{id}")
-    public DamageClaim getClaim(@PathVariable Long id) { return claimService.getClaim(id); }
+    @PostMapping("/file/{parcelId}")
+    public ResponseEntity<DamageClaim> fileClaim(@PathVariable Long parcelId, @RequestBody DamageClaim claim) {
+        return ResponseEntity.ok(claimService.fileClaim(parcelId, claim));
+    }
 
-    @GetMapping
-    public List<DamageClaim> getAllClaims() { return claimService.getAllClaims(); }
+    @PutMapping("/evaluate/{claimId}")
+    public ResponseEntity<DamageClaim> evaluateClaim(@PathVariable Long claimId) {
+        return ResponseEntity.ok(claimService.evaluateClaim(claimId));
+    }
 
-    @PutMapping
-    public DamageClaim updateClaim(@RequestBody DamageClaim claim) { return claimService.updateClaim(claim); }
-
-    @DeleteMapping("/{id}")
-    public void deleteClaim(@PathVariable Long id) { claimService.deleteClaim(id); }
+    @GetMapping("/{claimId}")
+    public ResponseEntity<DamageClaim> getClaim(@PathVariable Long claimId) {
+        return ResponseEntity.ok(claimService.getClaim(claimId));
+    }
 }
