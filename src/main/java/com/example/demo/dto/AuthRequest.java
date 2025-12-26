@@ -1,20 +1,30 @@
-package com.example.demo.config;
+package com.example.demo.dto;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import java.util.List;
+public class AuthRequest {
 
-@Configuration
-public class SwaggerConfig {
+    private String email;
+    private String password;
 
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                // You need to change the port as per your server
-                .servers(List.of(
-                        new Server().url("https://9299.pro604cr.amypo.ai/")
-                ));
-        }
+    public AuthRequest() {}
+
+    public AuthRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
