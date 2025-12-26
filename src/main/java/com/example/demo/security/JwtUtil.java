@@ -1,23 +1,41 @@
 package com.example.demo.security;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
+    // Must be at least 256-bit for HS256
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
     public String generateToken(String email) {
-        // Mock token generation for test pass
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + email;
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(key)
+                .compact();
     }
 
     public String extractEmail(String token) {
-        if (token != null && token.contains(".")) {
-            return token.substring(token.lastIndexOf(".") + 1);
-        }
-        return null;
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean validateToken(String token) {
-        return token != null && !token.isEmpty();
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
