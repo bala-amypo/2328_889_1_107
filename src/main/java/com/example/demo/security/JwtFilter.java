@@ -1,63 +1,44 @@
 package com.example.demo.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.*;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
-@Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    public JwtFilter(JwtUtil jwtUtil) {
+    public JwtFilter(JwtUtil jwtUtil){
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain
+    ) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
+        String header = request.getHeader("Authorization");
 
-        // Skip public endpoints
-        if (path.startsWith("/auth/") || path.startsWith("/swagger-ui/") || path.startsWith("/v3/api-docs/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        final String authHeader = request.getHeader("Authorization");
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        if(header != null && header.startsWith("Bearer ")) {
             try {
-                var claims = jwtUtil.validateToken(token);
-
-                Long userId = claims.get("userId", Long.class);
+                var claims = jwtUtil.validateToken(header.substring(7));
                 String email = claims.get("email", String.class);
                 String role = claims.get("role", String.class);
 
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        email,
-                        null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                Authentication auth = new UsernamePasswordAuthenticationToken(
+                        email, null,
+                        List.of(() -> "ROLE_" + role)
                 );
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-
-            } catch (Exception e) {
-                // Invalid token, just do not set authentication
-            }
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (Exception ignored) {}
         }
-
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 }
