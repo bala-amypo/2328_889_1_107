@@ -1,29 +1,43 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.DamageClaim;
+import com.example.demo.model.Evidence;
+import com.example.demo.repository.DamageClaimRepository;
+import com.example.demo.repository.EvidenceRepository;
 import com.example.demo.service.EvidenceService;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class EvidenceServiceImpl implements EvidenceService {
 
-    private final EvidenceRepository evidenceRepo;
-    private final DamageClaimRepository claimRepo;
+    private final EvidenceRepository evidenceRepository;
+    private final DamageClaimRepository claimRepository;
 
-    public EvidenceServiceImpl(EvidenceRepository e, DamageClaimRepository c) {
-        this.evidenceRepo = e;
-        this.claimRepo = c;
+    public EvidenceServiceImpl(EvidenceRepository evidenceRepository,
+                               DamageClaimRepository claimRepository) {
+        this.evidenceRepository = evidenceRepository;
+        this.claimRepository = claimRepository;
     }
 
-    public Evidence uploadEvidence(Long claimId, Evidence e) {
-        DamageClaim c = claimRepo.findById(claimId)
-                .orElseThrow(() -> new RuntimeException("Claim not found"));
-        e.setClaim(c);
-        return evidenceRepo.save(e);
+    @Override
+    public Evidence uploadEvidence(Long claimId, Evidence evidence) {
+        DamageClaim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+
+        evidence.setClaim(claim);
+        evidence.setUploadedAt(LocalDateTime.now());
+        return evidenceRepository.save(evidence);
     }
 
+    @Override
     public List<Evidence> getEvidenceForClaim(Long claimId) {
-        return evidenceRepo.findByClaim_Id(claimId);
+        if (!claimRepository.existsById(claimId)) {
+            throw new ResourceNotFoundException("Claim not found");
+        }
+        return evidenceRepository.findByClaim_Id(claimId);
     }
 }
