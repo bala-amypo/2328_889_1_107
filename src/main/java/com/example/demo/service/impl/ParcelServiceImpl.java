@@ -1,4 +1,5 @@
 package com.example.demo.service.impl;
+
 import com.example.demo.model.Parcel;
 import com.example.demo.repository.ParcelRepository;
 import com.example.demo.service.ParcelService;
@@ -6,13 +7,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ParcelServiceImpl implements ParcelService {
-    private final ParcelRepository repo;
-    public ParcelServiceImpl(ParcelRepository r) { this.repo = r; }
-    public Parcel addParcel(Parcel p) {
-        if (repo.existsByTrackingNumber(p.getTrackingNumber())) throw new RuntimeException("tracking exists");
-        return repo.save(p);
+    private final ParcelRepository parcelRepository;
+
+    public ParcelServiceImpl(ParcelRepository parcelRepository) {
+        this.parcelRepository = parcelRepository;
     }
-    public Parcel getByTrackingNumber(String t) {
-        return repo.findByTrackingNumber(t).orElseThrow(() -> new RuntimeException("parcel not found"));
+
+    @Override
+    public Parcel addParcel(Parcel parcel) {
+        // Test requirement: message must contain "tracking exists"
+        if (parcelRepository.existsByTrackingNumber(parcel.getTrackingNumber())) {
+            throw new RuntimeException("Parcel tracking exists");
+        }
+        return parcelRepository.save(parcel);
+    }
+
+    @Override
+    public Parcel getByTrackingNumber(String trackingNumber) {
+        // Test requirement: message must contain "parcel not found"
+        return parcelRepository.findByTrackingNumber(trackingNumber)
+                .orElseThrow(() -> new RuntimeException("parcel not found"));
     }
 }
