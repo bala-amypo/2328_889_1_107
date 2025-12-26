@@ -4,45 +4,43 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "parcels")
 public class Parcel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String trackingNumber;
-    private String description;
-    private String senderName;
-    private double weightKg;
-    private LocalDateTime deliveredAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String trackingNumber;
+    private String senderName;
+    private String receiverName;
+    private double weightKg;
+
+    private LocalDateTime deliveredAt;
 
     public Parcel() {}
 
-    // REQUIRED: Fixes errors on lines 115, 126, 140, 165, 251
-    public Parcel(String trackingNumber, String description, String senderName, double weightKg) {
+    public Parcel(String trackingNumber, String senderName, String receiverName, double weightKg) {
         this.trackingNumber = trackingNumber;
-        this.description = description;
         this.senderName = senderName;
+        this.receiverName = receiverName;
         this.weightKg = weightKg;
-        this.deliveredAt = LocalDateTime.now();
     }
-
-    public String getSenderName() { return senderName; }
-    public void setSenderName(String senderName) { this.senderName = senderName; }
-    public double getWeightKg() { return weightKg; }
-    public void setWeightKg(double weightKg) { this.weightKg = weightKg; }
-    public LocalDateTime getDeliveredAt() { return deliveredAt; }
-    public void setDeliveredAt(LocalDateTime deliveredAt) { this.deliveredAt = deliveredAt; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getTrackingNumber() { return trackingNumber; }
     public void setTrackingNumber(String trackingNumber) { this.trackingNumber = trackingNumber; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+
+    public String getSenderName() { return senderName; }
+    public void setSenderName(String senderName) { this.senderName = senderName; }
+
+    public String getReceiverName() { return receiverName; }
+    public void setReceiverName(String receiverName) { this.receiverName = receiverName; }
+
+    public double getWeightKg() { return weightKg; }
+    public void setWeightKg(double weightKg) { this.weightKg = weightKg; }
+
+    public LocalDateTime getDeliveredAt() { return deliveredAt; }
+    public void setDeliveredAt(LocalDateTime deliveredAt) { this.deliveredAt = deliveredAt; }
 }

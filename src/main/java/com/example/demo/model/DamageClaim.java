@@ -2,66 +2,49 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Table(name = "damage_claims")
 public class DamageClaim {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status;
-
-    private LocalDateTime filedAt;
-
-    private double score;
-
     private String claimDescription;
 
+    private String status = "PENDING";
+
+    private Double score;
+
+    private LocalDateTime filedAt = LocalDateTime.now();
+
     @ManyToOne
-    @JoinColumn(name = "parcel_id")
     private Parcel parcel;
 
     @ManyToMany
-    @JoinTable(
-        name = "claim_applied_rules",
-        joinColumns = @JoinColumn(name = "claim_id"),
-        inverseJoinColumns = @JoinColumn(name = "rule_id")
-    )
-    private Set<ClaimRule> appliedRules;
+    private Set<ClaimRule> appliedRules = new HashSet<>();
 
-    // MANDATORY: Default Constructor
     public DamageClaim() {}
 
-    // RECOMMENDED: Constructor for testing
-    public DamageClaim(String claimDescription, String status, double score) {
-        this.claimDescription = claimDescription;
-        this.status = status;
-        this.score = score;
-        this.filedAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getClaimDescription() { return claimDescription; }
+    public void setClaimDescription(String claimDescription) { this.claimDescription = claimDescription; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public Double getScore() { return score; }
+    public void setScore(Double score) { this.score = score; }
+
     public LocalDateTime getFiledAt() { return filedAt; }
     public void setFiledAt(LocalDateTime filedAt) { this.filedAt = filedAt; }
-
-    public double getScore() { return score; }
-    public void setScore(double score) { this.score = score; }
 
     public Parcel getParcel() { return parcel; }
     public void setParcel(Parcel parcel) { this.parcel = parcel; }
 
     public Set<ClaimRule> getAppliedRules() { return appliedRules; }
     public void setAppliedRules(Set<ClaimRule> appliedRules) { this.appliedRules = appliedRules; }
-
-    public String getClaimDescription() { return claimDescription; }
-    public void setClaimDescription(String claimDescription) { this.claimDescription = claimDescription; }
 }
