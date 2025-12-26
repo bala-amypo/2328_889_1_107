@@ -1,62 +1,39 @@
-package com.example.demo.util;
+package com.example.demo.service.impl;
 
-import com.example.demo.model.ClaimRule;
-import com.example.demo.model.DamageClaim;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Service
+public class UserServiceImpl implements UserService {
 
-public class RuleEngineUtil {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Calculates the score of a claim based on the list of rules.
-     * Score ranges from 0.0 to 1.0.
-     */
-    public static double calculateScore(DamageClaim claim, List<ClaimRule> rules) {
-        if (rules == null || rules.isEmpty()) return 0.0;
-
-        double totalWeight = 0.0;
-        double appliedWeight = 0.0;
-
-        for (ClaimRule rule : rules) {
-            totalWeight += rule.getWeight();
-            if (applies(rule, claim)) {
-                appliedWeight += rule.getWeight();
-            }
-        }
-
-        return totalWeight == 0.0 ? 0.0 : appliedWeight / totalWeight;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Returns the set of rules that were applied to this claim.
-     */
-    public static Set<ClaimRule> getAppliedRules(DamageClaim claim, List<ClaimRule> rules) {
-        Set<ClaimRule> appliedRules = new HashSet<>();
-        for (ClaimRule rule : rules) {
-            if (applies(rule, claim)) {
-                appliedRules.add(rule);
-            }
+    @Override
+    public User register(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new BadRequestException("User with this email already exists");
         }
-        return appliedRules;
+        if (user.getRole() == null) {
+            user.setRole("AGENT");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
-    /**
-     * Determines if a rule applies to a given claim.
-     * Special rule: "always" always matches.
-     * Special rule: "description_contains:KEYWORD"
-     */
-    private static boolean applies(ClaimRule rule, DamageClaim claim) {
-        if (rule.getConditionExpression() == null) return false;
-        String condition = rule.getConditionExpression().trim().toLowerCase();
-        String description = claim.getClaimDescription() == null ? "" : claim.getClaimDescription().toLowerCase();
-
-        if (condition.equals("always")) return true;
-        if (condition.startsWith("description_contains:")) {
-            String keyword = condition.substring("description_contains:".length());
-            return description.contains(keyword.toLowerCase());
-        }
-        return false;
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
