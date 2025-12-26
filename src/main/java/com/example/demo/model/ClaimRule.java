@@ -21,14 +21,16 @@ public class ClaimRule {
         this.weight = weight;
     }
 
-    public Long getId() { return id; }
+    // ALIAS METHOD: Required by the Test file and RuleEngineUtil
+    public String getRuleExpression() { 
+        return conditionExpression; 
+    }
 
+    public Long getId() { return id; }
     public String getRuleName() { return ruleName; }
     public void setRuleName(String ruleName) { this.ruleName = ruleName; }
-
     public String getConditionExpression() { return conditionExpression; }
     public void setConditionExpression(String conditionExpression) { this.conditionExpression = conditionExpression; }
-
     public double getWeight() { return weight; }
     public void setWeight(double weight) { this.weight = weight; }
 }

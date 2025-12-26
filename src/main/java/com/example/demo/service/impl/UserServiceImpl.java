@@ -15,19 +15,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * REQUIRED BY TEST: Single-argument constructor.
-     * The test suite instantiates the service using only the repository.
-     */
+    // Constructor for the Test file
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        // Provide a default encoder so register() doesn't throw NullPointerException
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    /**
-     * Standard constructor for Spring Dependency Injection.
-     */
+    // Constructor for Spring DI
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -38,10 +32,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("User with this email already exists");
         }
-        if (user.getRole() == null) {
-            user.setRole("AGENT");
-        }
-        // Encodes password before saving
+        if (user.getRole() == null) user.setRole("AGENT");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

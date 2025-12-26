@@ -1,39 +1,48 @@
-package com.example.demo.service.impl;
+package com.example.demo.util;
 
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.example.demo.model.ClaimRule;
+import com.example.demo.model.DamageClaim;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Service
-public class UserServiceImpl implements UserService {
+public class RuleEngineUtil {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    // --- FOR THE TEST FILE ---
+    public static double computeScore(String description, List<ClaimRule> rules) {
+        return calculateInternal(description, rules);
     }
 
-    @Override
-    public User register(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("User with this email already exists");
-        }
-        if (user.getRole() == null) {
-            user.setRole("AGENT");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    // --- FOR THE SERVICE ---
+    public static double calculateScore(DamageClaim claim, List<ClaimRule> rules) {
+        return calculateInternal(claim.getClaimDescription(), rules);
     }
 
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public static List<ClaimRule> getAppliedRules(DamageClaim claim, List<ClaimRule> rules) {
+        String desc = (claim.getClaimDescription() == null) ? "" : claim.getClaimDescription().toLowerCase();
+        return rules.stream()
+                .filter(rule -> {
+                    String expr = rule.getRuleExpression().toLowerCase();
+                    return expr.equals("always") || 
+                           (expr.contains(":") && desc.contains(expr.split(":")[1].trim()));
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Shared logic to satisfy both callers
+    private static double calculateInternal(String description, List<ClaimRule> rules) {
+        if (rules == null || rules.isEmpty()) return 0.0;
+        String desc = (description == null) ? "" : description.toLowerCase();
+
+        boolean anyMatch = rules.stream().anyMatch(rule -> {
+            String expr = rule.getRuleExpression().toLowerCase();
+            if (expr.equals("always")) return true;
+            if (expr.contains(":")) {
+                String keyword = expr.split(":")[1].trim();
+                return desc.contains(keyword);
+            }
+            return false;
+        });
+
+        return anyMatch ? 1.0 : 0.0;
     }
 }
