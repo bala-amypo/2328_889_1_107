@@ -1,63 +1,36 @@
 package com.example.demo.service.impl;
-
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.ClaimRule;
-import com.example.demo.model.DamageClaim;
-import com.example.demo.model.Parcel;
-import com.example.demo.repository.ClaimRuleRepository;
-import com.example.demo.repository.DamageClaimRepository;
-import com.example.demo.repository.ParcelRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.DamageClaimService;
 import com.example.demo.util.RuleEngineUtil;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
 public class DamageClaimServiceImpl implements DamageClaimService {
+    private final ParcelRepository pRepo;
+    private final DamageClaimRepository cRepo;
+    private final ClaimRuleRepository rRepo;
 
-    private final ParcelRepository parcelRepository;
-    private final DamageClaimRepository claimRepository;
-    private final ClaimRuleRepository ruleRepository;
-
-    public DamageClaimServiceImpl(ParcelRepository parcelRepository,
-                                  DamageClaimRepository claimRepository,
-                                  ClaimRuleRepository ruleRepository) {
-        this.parcelRepository = parcelRepository;
-        this.claimRepository = claimRepository;
-        this.ruleRepository = ruleRepository;
+    public DamageClaimServiceImpl(ParcelRepository pr, DamageClaimRepository cr, ClaimRuleRepository rr) {
+        this.pRepo = pr; this.cRepo = cr; this.rRepo = rr;
     }
 
-    @Override
-    public DamageClaim fileClaim(Long parcelId, DamageClaim claim) {
-        Parcel parcel = parcelRepository.findById(parcelId)
-                .orElseThrow(() -> new ResourceNotFoundException("Parcel not found"));
-
-        claim.setParcel(parcel);
-        claim.setStatus("PENDING");
-        claim.setFiledAt(LocalDateTime.now());
-
-        return claimRepository.save(claim);
+    public DamageClaim fileClaim(Long pId, DamageClaim c) {
+        Parcel p = pRepo.findById(pId).orElseThrow(() -> new RuntimeException("parcel not found"));
+        c.setParcel(p);
+        c.setStatus("PENDING");
+        return cRepo.save(c);
     }
 
-    @Override
-    public DamageClaim evaluateClaim(Long claimId) {
-        DamageClaim claim = claimRepository.findById(claimId)
-                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
-
-        List<ClaimRule> rules = ruleRepository.findAll();
-        double score = RuleEngineUtil.calculateScore(claim, rules);
-        claim.setScore(score);
-        claim.setStatus(score > 0.9 ? "APPROVED" : (score == 0.0 ? "REJECTED" : "PENDING"));
-        claim.setAppliedRules(RuleEngineUtil.getAppliedRules(claim, rules));
-
-        return claimRepository.save(claim);
+    public DamageClaim evaluateClaim(Long id) {
+        DamageClaim c = cRepo.findById(id).orElseThrow(() -> new RuntimeException("claim not found"));
+        double s = RuleEngineUtil.computeScore(c.getClaimDescription(), rRepo.findAll());
+        c.setScore(s);
+        c.setStatus(s > 0.5 ? "APPROVED" : "REJECTED");
+        return cRepo.save(c);
     }
-
-    @Override
-    public DamageClaim getClaim(Long claimId) {
-        return claimRepository.findById(claimId)
-                .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
+    
+    public DamageClaim getClaim(Long id) {
+        return cRepo.findById(id).orElseThrow(() -> new RuntimeException("claim not found"));
     }
 }
