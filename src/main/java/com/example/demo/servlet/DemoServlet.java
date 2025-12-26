@@ -9,10 +9,11 @@ import java.io.IOException;
 
 @WebServlet("/demo")
 public class DemoServlet extends HttpServlet {
+    
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write("OK_Response");
+        response.setContentType("text/plain");
+        response.getWriter().write("OK_Response");
     }
 }
