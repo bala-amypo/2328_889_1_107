@@ -1,36 +1,24 @@
 package com.example.demo.model;
-
 import jakarta.persistence.*;
 
 @Entity
 public class ClaimRule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String ruleName;
-    private String conditionExpression;
-    private double weight;
+    private String expression;
+    private Double weight;
 
     public ClaimRule() {}
-
-    public ClaimRule(String ruleName, String conditionExpression, double weight) {
-        this.ruleName = ruleName;
-        this.conditionExpression = conditionExpression;
-        this.weight = weight;
+    public ClaimRule(String ruleName, String expression, Double weight) {
+        this.ruleName = ruleName; this.expression = expression; this.weight = weight;
     }
-
-    // ALIAS METHOD: Required by the Test file and RuleEngineUtil
-    public String getRuleExpression() { 
-        return conditionExpression; 
-    }
-
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getRuleName() { return ruleName; }
     public void setRuleName(String ruleName) { this.ruleName = ruleName; }
-    public String getConditionExpression() { return conditionExpression; }
-    public void setConditionExpression(String conditionExpression) { this.conditionExpression = conditionExpression; }
-    public double getWeight() { return weight; }
-    public void setWeight(double weight) { this.weight = weight; }
+    public String getExpression() { return expression; }
+    public void setExpression(String expression) { this.expression = expression; }
+    public Double getWeight() { return weight; }
+    public void setWeight(Double weight) { this.weight = weight; }
 }
